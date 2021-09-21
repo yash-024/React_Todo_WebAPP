@@ -47,13 +47,9 @@ function HomeTodo({ props }) {
   };
 
   const editData = (todo, id) => {
-    debugger;
-    console.log("Todo" + todo);
-
     setName(todo.name);
     setDesc(todo.desc);
     setEditID(id);
-
     setEdit(true);
   };
 
@@ -103,7 +99,7 @@ function HomeTodo({ props }) {
           </div>
           <div className="col-md-6">
             {todos && todos.length > 0 ? (
-              <Todos todos={todos} editData={editData} />
+              <Todos todos={todos} edit={edit} editData={editData} />
             ) : (
               <></>
             )}

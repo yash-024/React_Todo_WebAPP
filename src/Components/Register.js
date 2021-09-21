@@ -101,6 +101,9 @@ export default function Register() {
                   id="Aadhaar"
                   aria-describedby="AadhaarHelp"
                   placeholder=""
+                  min="0"
+                  max="99999"
+                  maxlength="5"
                   value={Aadhaar}
                   onChange={(e) => {
                     setAadhaar(e.target.value);

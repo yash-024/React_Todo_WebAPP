@@ -9,8 +9,18 @@ import Home from "./Components/Home/Home";
 import Register from "./Components/Register";
 import Login from "./Components/Login";
 import UserList from "./Components/UserList";
+import { db, auth } from "./firebase";
+import { useEffect, useState } from "react/cjs/react.development";
 
-function App({ props }) {
+function App() {
+  const [user, setUser] = useState();
+  const userx = auth.currentUser;
+  useEffect(() => {
+    if (userx) {
+      setUser(userx);
+    }
+  }, [userx]);
+  console.log("auth :" + auth);
   return (
     <>
       <Header title="Todo List" />

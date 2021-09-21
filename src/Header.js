@@ -2,9 +2,12 @@ import React from "react";
 import PropTypes from "prop-types";
 import "./Header.css";
 import { Link, useHistory } from "react-router-dom";
+import { db, auth } from "./firebase";
+import { signOut } from "@firebase/auth";
 
 const Header = (props) => {
   const history = useHistory();
+
   return (
     <>
       <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -47,6 +50,14 @@ const Header = (props) => {
               </li>
             </ul>
             <form className="d-flex ml-auto">
+              {auth.currentUser ? <p>Logout</p> : <p>Login</p>}
+              <button
+                className="btn btn-light login mr-2"
+                onClick={() => signOut().then(alert("Sigout Succesfully"))}
+              >
+                <i className="fa fa-sign-out-alt"></i>&nbsp; Logout
+              </button>
+
               <button
                 className="btn btn-light login "
                 onClick={() => history.push("/register")}

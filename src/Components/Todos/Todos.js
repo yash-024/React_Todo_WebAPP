@@ -1,7 +1,7 @@
 import React from "react";
 import { TodoItems } from "./TodoItems";
 
-const Todos = ({ editData, todos }) => {
+const Todos = ({ editData, todos, edit }) => {
   return (
     <>
       <div className="ListofTodo">
@@ -25,6 +25,7 @@ const Todos = ({ editData, todos }) => {
                   id={data.id}
                   key={data.id}
                   editData={editData}
+                  edit={edit}
                 />
               );
             })}

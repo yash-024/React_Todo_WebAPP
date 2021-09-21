@@ -41,52 +41,42 @@ export default function UserList() {
     },
   ];
 
-  const data = [
-    {
-      id: 1,
-      title: "Beetlejuice",
-      year: "1988",
-    },
-    {
-      id: 2,
-      title: "Ghostbusters",
-      year: "1984",
-    },
-  ];
   return (
     <>
-      <div className="countiner p-5">
+      <div className="countiner p-3">
         <div className="row justify-content-center ">
-          <table class="table">
+          <h5 className="text-center ">
+            <b>User List </b>
+          </h5>
+          {/* <table class="table shadow text-center">
             <thead class="thead-dark">
-              <tr>
-                {/* <th scope="col">UserID</th> */}
-                <th scope="col">Name</th>
+              <tr> */}
+          {/* <th scope="col">UserID</th> */}
+          {/* <th scope="col">Name</th>
                 <th scope="col">Email</th>
                 <th scope="col">Address</th>
                 <th scope="col">Mobile</th>
                 <th scope="col">AlternetMobile</th>
-                <th scope="col">Aadhaar</th>
-              </tr>
+                <th scope="col">Aadhaar</th> */}
+          {/* </tr>
             </thead>
-            <tbody>
-              {userlist.map((data) => {
+            <tbody> */}
+          {/* {userlist.map((data) => {
                 return (
                   <tr key={data.Uid}>
                     {/* <th scope="row">{data.Uid}</th> */}
-                    <td>{data.Name}</td>
+          {/* <td>{data.Name}</td>
                     <td>{data.Email}</td>
                     <td>{data.Address}</td>
                     <td>{data.Mobile}</td>
                     <td>{data.AlternetMobile}</td>
                     <td>{data.Aadhaar}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-          {/* <DataTable columns={columns} data={userlist} />
-          {console.log("Userlist :" + userlist)} */}
+                  </tr> */}
+          {/* ); })} */}
+          {/* </tbody>
+          </table> */}
+          <DataTable columns={columns} data={userlist} />
+          {console.log("Userlist :" + userlist)}
         </div>
       </div>
     </>

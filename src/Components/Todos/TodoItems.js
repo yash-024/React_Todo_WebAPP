@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { db } from "../../firebase";
 
-export const TodoItems = ({ todo, id, editData }) => {
+export const TodoItems = ({ todo, id, editData, edit }) => {
   return (
     <>
       <div className=" shadow p-3 mt-3">
@@ -20,6 +20,7 @@ export const TodoItems = ({ todo, id, editData }) => {
           Edit
         </button>
         <button
+          disabled={edit}
           className="btn btn-sm btn-danger mt-2"
           onClick={(event) => db.collection("todos").doc(id).delete()}
         >

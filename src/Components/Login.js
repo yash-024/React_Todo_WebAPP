@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useHistory } from "react-router-dom";
-import { useAuthState } from "react-firebase-hooks/auth";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { db, auth } from "../firebase";
+import { auth } from "../firebase";
 
 export default function Login() {
   const [Email, setEmail] = useState("");
@@ -86,7 +85,7 @@ export default function Login() {
                 Login with Google
               </button> */}
 
-              <div class="d-flex justify-content-center links">
+              <div className="d-flex justify-content-center links">
                 Don't have an account? &nbsp;<a href="/register"> Sign Up</a>
               </div>
               {/* <div class="d-flex justify-content-center">
