@@ -48,7 +48,7 @@ export default function UserList() {
           <h5 className="text-center ">
             <b>User List </b>
           </h5>
-          {/* <table class="table shadow text-center">
+          {/*           <table class="table shadow text-center">
             <thead class="thead-dark">
               <tr> */}
           {/* <th scope="col">UserID</th> */}
