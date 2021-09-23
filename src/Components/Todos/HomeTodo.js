@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { db } from "../../firebase";
 import firebase from "firebase/compat";
 import Todos from "./Todos";
@@ -9,10 +9,12 @@ function HomeTodo({ props }) {
   const [todos, setTodos] = useState([]);
   const [edit, setEdit] = useState(false);
   const [editID, setEditID] = useState("");
+  const inputName = useRef();
   //when the app loads, we need to listen to the database and fetch new todos as they get Added/removed
   useEffect(() => {
     //this code here... firebase when the app.js loads
     //setTodos(snapshot.docs.map((doc) => doc.data()));
+    inputName.current.focus();
     db.collection("todos")
       .orderBy("timestamp", "desc")
       .onSnapshot((snapshot) => {
@@ -47,6 +49,7 @@ function HomeTodo({ props }) {
   };
 
   const editData = (todo, id) => {
+    inputName.current.focus();
     setName(todo.name);
     setDesc(todo.desc);
     setEditID(id);
@@ -66,6 +69,7 @@ function HomeTodo({ props }) {
                   type="text"
                   className="form-control"
                   id="name"
+                  ref={inputName}
                   aria-describedby="emailHelp"
                   placeholder=""
                   value={name}

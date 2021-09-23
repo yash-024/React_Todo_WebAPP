@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { Link, useHistory } from "react-router-dom";
 import { db, auth } from "../firebase";
@@ -17,6 +17,12 @@ export default function Register() {
   const [Aadhaar, setAadhaar] = useState("");
   const [UploadImage, setUploadImage] = useState("");
   const { signup } = useAuth();
+
+  const inputNameRef = useRef();
+
+  useEffect(() => {
+    inputNameRef.current.focus();
+  }, []);
 
   const register = (e) => {
     e.preventDefault();
@@ -75,6 +81,7 @@ export default function Register() {
                   type="text"
                   className="form-control"
                   id="Name"
+                  ref={inputNameRef}
                   aria-describedby="NameHelp"
                   placeholder=""
                   value={Name}

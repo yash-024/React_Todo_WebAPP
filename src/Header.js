@@ -79,7 +79,7 @@ const Header = (props) => {
                 </>
               )}
             </ul>
-            <form className="d-flex ml-auto">
+            <div className="d-flex ml-auto">
               {!currentUser ? (
                 <>
                   <button
@@ -106,7 +106,7 @@ const Header = (props) => {
                   </button>
                 </>
               )}
-            </form>
+            </div>
           </div>
         </div>
       </nav>

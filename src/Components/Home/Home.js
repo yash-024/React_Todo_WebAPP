@@ -28,7 +28,7 @@ function Home() {
               >
                 <h1>Welcome {currentUser && currentUser.email}</h1>
 
-                <h2>What We Believe</h2>
+                <h2>What We Believe In Success</h2>
                 <a href="/" className="btn btn-success mt-3">
                   Get Started
                 </a>

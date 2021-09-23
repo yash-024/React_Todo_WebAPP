@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase";
@@ -10,8 +10,13 @@ export default function Login() {
   const [Email, setEmail] = useState("");
   const [Password, setPassword] = useState("");
   const history = useHistory();
+  const inputEmailRef = useRef();
 
   const { login } = useAuth();
+
+  useEffect(() => {
+    inputEmailRef.current.focus();
+  }, []);
 
   const loginUser = (e) => {
     e.preventDefault();
@@ -44,7 +49,7 @@ export default function Login() {
                   type="text"
                   className="form-control"
                   id="Email"
-                  placeholder="Email"
+                  ref={inputEmailRef}
                   value={Email}
                   onChange={(e) => {
                     setEmail(e.target.value);
@@ -57,7 +62,6 @@ export default function Login() {
                   type="password"
                   className="form-control"
                   id="Password"
-                  placeholder="Password"
                   value={Password}
                   onChange={(e) => {
                     setPassword(e.target.value);
