@@ -3,6 +3,8 @@ import { Link, useHistory } from "react-router-dom";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase";
 import { useAuth } from "./Contexts/AuthContext";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Login() {
   const [Email, setEmail] = useState("");
@@ -16,36 +18,16 @@ export default function Login() {
 
     try {
       debugger;
-      const Userlogin = login(Email, Password);
-      console.log("User Login : " + Userlogin);
+      login(Email, Password);
+
+      toast.success("User Login Successfully");
       history.push("/home");
-    } catch {
-      alert("Error while user is login.");
+    } catch (e) {
+      toast.error("Error while user is login." + e);
       history.push("/login");
     }
-
-    // signInWithEmailAndPassword(auth, Email, Password)
-    //   .then((userCredential) => {
-    //     // Signed in
-    //     const user = userCredential.user;
-    //     //alert("Sign in Successfully :" + Email);
-    //     history.push("/");
-    //     // ...
-    //   })
-    //   .catch((error) => {
-    //     const errorCode = error.code;
-    //     const errorMessage = error.message;
-    //     console.log("Login Error :" + errorMessage);
-    //   });
   };
 
-  // useEffect(() => {
-  //   if (loading) {
-  //     // maybe trigger a loading screen
-  //     return;
-  //   }
-  //   if (user) history.replace("/");
-  // }, [user, loading]);
   return (
     <>
       <div className="countiner p-5">
