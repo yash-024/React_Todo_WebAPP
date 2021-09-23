@@ -11,20 +11,14 @@ import Login from "./Components/Login";
 import UserList from "./Components/UserList";
 import { db, auth } from "./firebase";
 import { useEffect, useState } from "react/cjs/react.development";
+import { useAuth } from "./Components/Contexts/AuthContext";
 
 function App() {
-  const [user, setUser] = useState();
-  const userx = auth.currentUser;
-  useEffect(() => {
-    if (userx) {
-      setUser(userx);
-    }
-  }, [userx]);
-  console.log("auth :" + auth);
+  const { currentUser } = useAuth();
+
   return (
     <>
       <Header title="Todo List" />
-
       <Switch>
         <Route path="/todo" exact component={HomeTodo} />
         <Route path="/about" component={About} />
@@ -33,7 +27,6 @@ function App() {
         <Route path="/userlist" component={UserList} />
         <Route path="/" component={Home} />
       </Switch>
-
       <Footer />
     </>
   );

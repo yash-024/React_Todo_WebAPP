@@ -2,28 +2,41 @@ import React, { useState, useEffect } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase";
+import { useAuth } from "./Contexts/AuthContext";
 
 export default function Login() {
   const [Email, setEmail] = useState("");
   const [Password, setPassword] = useState("");
   const history = useHistory();
 
+  const { login } = useAuth();
+
   const loginUser = (e) => {
     e.preventDefault();
 
-    signInWithEmailAndPassword(auth, Email, Password)
-      .then((userCredential) => {
-        // Signed in
-        const user = userCredential.user;
-        //alert("Sign in Successfully :" + Email);
-        history.push("/");
-        // ...
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log("Login Error :" + errorMessage);
-      });
+    try {
+      debugger;
+      const Userlogin = login(Email, Password);
+      console.log("User Login : " + Userlogin);
+      history.push("/home");
+    } catch {
+      alert("Error while user is login.");
+      history.push("/login");
+    }
+
+    // signInWithEmailAndPassword(auth, Email, Password)
+    //   .then((userCredential) => {
+    //     // Signed in
+    //     const user = userCredential.user;
+    //     //alert("Sign in Successfully :" + Email);
+    //     history.push("/");
+    //     // ...
+    //   })
+    //   .catch((error) => {
+    //     const errorCode = error.code;
+    //     const errorMessage = error.message;
+    //     console.log("Login Error :" + errorMessage);
+    //   });
   };
 
   // useEffect(() => {
