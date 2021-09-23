@@ -14,16 +14,34 @@ export default function Profile() {
   const [Password, setPassword] = useState("");
   const [Aadhaar, setAadhaar] = useState("");
   const [UploadImage, setUploadImage] = useState("");
+  const [UserHoldRecoredUId, SetUserHoldRecoredUId] = useState("");
+  const [userData, setuserData] = useState([]);
 
   const { currentUser } = useAuth();
 
   useEffect(() => {
     db.collection("users")
-      .where("Uid" == currentUser.uid)
-      .onSnapshot((snapshot) => {
-        setName(snapshot.Name);
+      .get()
+      .then((querySnapshot) => {
+        //console.log("Total users: ", querySnapshot.size);
+        querySnapshot.forEach((documentSnapshot) => {
+          documentSnapshot.data().Uid == currentUser.uid &&
+            setuserData(documentSnapshot.data());
+        });
       });
+
+    setName(userData.Name);
+    setAddress(userData.Address);
+    setMobile(userData.Mobile);
+    setAlternetMobile(userData.AlternetMobile);
+    setEmail(userData.Email);
+    setPassword(userData.Password);
+    setAadhaar(userData.Aadhaar);
+    setUploadImage(userData.UploadImage);
+    //SetUserHoldRecoredUId(userData);
   }, []);
+
+  console.log("Get UserData :" + JSON.stringify(userData));
 
   const UpdateProfile = (e) => {
     e.preventDefault();
@@ -66,13 +84,10 @@ export default function Profile() {
     <>
       <div className="countiner p-3">
         <div className="row justify-content-center ">
-          <h5 className="text-center ">
-            <b> Profile {currentUser && currentUser.uid}</b>
-          </h5>
           <div className="col-md-6 ml-5 mr-5">
             <div className="section-title">
-              <span>Register</span>
-              <h2 className="text-center"> Register </h2>
+              <span>Profile</span>
+              <h2 className="text-center"> Profile </h2>
             </div>
             <form className="shadow p-4 mt-2">
               <div className="form-group">
