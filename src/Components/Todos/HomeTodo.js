@@ -30,7 +30,7 @@ function HomeTodo({ props }) {
 
   const addTodoData = (e) => {
     e.preventDefault();
-    var AddNewTodo = {
+    let AddNewTodo = {
       name: name,
       desc: desc,
       timestamp: firebase.firestore.FieldValue.serverTimestamp(),

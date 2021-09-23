@@ -97,6 +97,10 @@ const Header = (props) => {
                 </>
               ) : (
                 <>
+                  <Link className="nav-link" to="/profile">
+                    <i class="fa fa-user" aria-hidden="true"></i> &nbsp;
+                    {currentUser && currentUser.email}
+                  </Link>
                   <button
                     className="btn btn-light login mr-2"
                     //onClick={() => signOut().then(alert("Sigout Succesfully"))}

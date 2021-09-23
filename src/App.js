@@ -13,6 +13,7 @@ import { db, auth } from "./firebase";
 import { useEffect, useState } from "react/cjs/react.development";
 import { useAuth } from "./Components/Contexts/AuthContext";
 import { ToastContainer, toast } from "react-toastify";
+import Profile from "./Components/User/Profile";
 
 function App() {
   const { currentUser } = useAuth();
@@ -38,6 +39,7 @@ function App() {
         <Route path="/register" component={Register} />
         <Route path="/login" component={Login} />
         <Route path="/userlist" component={UserList} />
+        <Route path="/profile" component={Profile} />
         <Route path="/" component={Home} />
       </Switch>
       <Footer />
