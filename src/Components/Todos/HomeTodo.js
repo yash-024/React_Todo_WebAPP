@@ -35,7 +35,7 @@ function HomeTodo({ props }) {
     };
     debugger;
     if (edit == true) {
-      console.log(edit);
+      //console.log(edit);
       db.collection("todos").doc(editID).set(AddNewTodo);
       setEdit(false);
     } else {

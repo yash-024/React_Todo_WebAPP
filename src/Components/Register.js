@@ -3,6 +3,8 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { Link, useHistory } from "react-router-dom";
 import { db, auth } from "../firebase";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { useAuth } from "./Contexts/AuthContext";
+import { toast } from "react-toastify";
 
 export default function Register() {
   const history = useHistory();
@@ -14,12 +16,12 @@ export default function Register() {
   const [Password, setPassword] = useState("");
   const [Aadhaar, setAadhaar] = useState("");
   const [UploadImage, setUploadImage] = useState("");
+  const { signup } = useAuth();
 
   const register = (e) => {
     e.preventDefault();
 
-    //const auth = getAuth();
-    createUserWithEmailAndPassword(auth, Email, Password)
+    signup(Email, Password)
       .then((userCredential) => {
         // Signed in
         const user = userCredential.user;
@@ -44,6 +46,7 @@ export default function Register() {
         setPassword("");
         setAadhaar("");
         setUploadImage("");
+        toast.success("User Register Successfully");
 
         history.push("/login");
         // ...

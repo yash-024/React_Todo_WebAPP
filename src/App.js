@@ -12,12 +12,25 @@ import UserList from "./Components/UserList";
 import { db, auth } from "./firebase";
 import { useEffect, useState } from "react/cjs/react.development";
 import { useAuth } from "./Components/Contexts/AuthContext";
+import { ToastContainer, toast } from "react-toastify";
 
 function App() {
   const { currentUser } = useAuth();
 
   return (
     <>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
+
       <Header title="Todo List" />
       <Switch>
         <Route path="/todo" exact component={HomeTodo} />
@@ -28,6 +41,8 @@ function App() {
         <Route path="/" component={Home} />
       </Switch>
       <Footer />
+
+      <ToastContainer />
     </>
   );
 }

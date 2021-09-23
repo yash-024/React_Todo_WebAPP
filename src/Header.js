@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import "./Header.css";
 import { Link, useHistory } from "react-router-dom";
 import { useAuth } from "./Components/Contexts/AuthContext";
+import { toast } from "react-toastify";
 
 const Header = (props) => {
   const { currentUser, logout } = useAuth();
@@ -11,9 +12,12 @@ const Header = (props) => {
   const LogoutUser = (e) => {
     e.preventDefault();
     try {
-      logout();
+      logout().then(
+        toast.success("User Logout Successfully"),
+        history.push("/home")
+      );
     } catch {
-      alert("Error while logout user...!");
+      toast.error("Error while logout user...!");
     }
   };
 
