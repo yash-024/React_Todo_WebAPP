@@ -1,11 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
-import { db, auth } from "../../firebase";
+import { db, auth, storage } from "../../firebase";
 import { useAuth } from "../Contexts/AuthContext";
+import "./Profile.css";
+import { default as usersolid } from "../Asset/Images/user-solid.svg";
 
 export default function Profile() {
   const history = useHistory();
+  const { currentUser } = useAuth();
   const [Name, setName] = useState("");
   const [Address, setAddress] = useState("");
   const [Mobile, setMobile] = useState("");
@@ -13,35 +16,54 @@ export default function Profile() {
   const [Email, setEmail] = useState("");
   const [Password, setPassword] = useState("");
   const [Aadhaar, setAadhaar] = useState("");
-  const [UploadImage, setUploadImage] = useState("");
+  const [UserImage, setUserImage] = useState("");
   const [UserHoldRecoredUId, SetUserHoldRecoredUId] = useState("");
   const [userData, setuserData] = useState([]);
+  const [isSet, setuser] = useState(false);
+  const [imageAsFile, setImageAsFile] = useState("");
 
-  const { currentUser } = useAuth();
+  const handleImageAsFile = (e) => {
+    e.preventDefault();
+    const image = e.target.files[0];
+    setImageAsFile((imageFile) => image);
+  };
 
   useEffect(() => {
-    db.collection("users")
-      .get()
-      .then((querySnapshot) => {
-        //console.log("Total users: ", querySnapshot.size);
-        querySnapshot.forEach((documentSnapshot) => {
-          documentSnapshot.data().Uid == currentUser.uid &&
-            setuserData(documentSnapshot.data());
+    if (userData.length > 0 && !isSet) {
+      SetUserHoldRecoredUId(userData[0].id);
+      setName(userData[0].user.Name);
+      setAddress(userData[0].user.Address);
+      setMobile(userData[0].user.Mobile);
+      setAlternetMobile(userData[0].user.AlternetMobile);
+      setEmail(userData[0].user.Email);
+      setPassword(userData[0].user.Password);
+      setAadhaar(userData[0].user.Aadhaar);
+      setUserImage(userData[0].user.UploadImage);
+      setuser(true);
+    }
+  }, [userData, isSet]);
+
+  useEffect(() => {
+    //setcurrentUserEmail(currentUser.email);
+
+    if (
+      userData.length === 0 &&
+      currentUser != "undefined" &&
+      currentUser != null
+    ) {
+      db.collection("users")
+        //.where("Email", "==", "jack@gmail.com")
+        .where("Email", "==", currentUser.email)
+        .onSnapshot((snapshot) => {
+          setuserData(
+            snapshot.docs.map((doc) => ({
+              id: doc.id,
+              user: doc.data(),
+            }))
+          );
         });
-      });
-
-    setName(userData.Name);
-    setAddress(userData.Address);
-    setMobile(userData.Mobile);
-    setAlternetMobile(userData.AlternetMobile);
-    setEmail(userData.Email);
-    setPassword(userData.Password);
-    setAadhaar(userData.Aadhaar);
-    setUploadImage(userData.UploadImage);
-    //SetUserHoldRecoredUId(userData);
-  }, []);
-
-  console.log("Get UserData :" + JSON.stringify(userData));
+    }
+  }, [userData]);
 
   const UpdateProfile = (e) => {
     e.preventDefault();
@@ -55,30 +77,61 @@ export default function Profile() {
       Email: Email,
       Password: Password,
       Aadhaar: Aadhaar,
-      UploadImage: UploadImage,
     };
 
-    db.collection("users").uid(currentUser.uid).set(EditUserInfo);
+    try {
+      db.collection("users")
+        .doc(UserHoldRecoredUId)
+        .set(EditUserInfo)
+        .then(() => {
+          debugger;
+          if (imageAsFile) {
+            const uploadTask = storage
+              .ref(`/images/${imageAsFile.name}`)
+              .put(imageAsFile);
+            //initiates the firebase side uploading
+            uploadTask.on(
+              "state_changed",
+              (snapShot) => {
+                //takes a snap shot of the process as it is happening
+                console.log(snapShot);
+              },
+              (err) => {
+                //catches the errors
+                console.log(err);
+              },
+              () => {
+                // gets the functions from storage refences the image storage in firebase by the children
+                // gets the download url then sets the image from firebase as the value for the imgUrl key:
+                storage
+                  .ref("images")
+                  .child("/" + imageAsFile.name)
+                  .getDownloadURL()
+                  .then((fireBaseUrl) => {
+                    debugger;
+                    db.collection("users")
+                      .doc(UserHoldRecoredUId)
+                      .update({ UploadImage: fireBaseUrl });
+                  });
+              }
+            );
+          }
+        });
 
-    setName("");
-    setAddress("");
-    setMobile("");
-    setAlternetMobile("");
-    setEmail("");
-    setPassword("");
-    setAadhaar("");
-    setUploadImage("");
-    toast.success("User Update Successfully");
-
-    //history.push("/login");
-    //     // ...
-    //   })
-    //   .catch((error) => {
-    //     const errorCode = error.code;
-    //     const errorMessage = error.message;
-    //     // ..
-    //     alert(" Error while User Register : " + errorMessage);
-    //   });
+      setName("");
+      setAddress("");
+      setMobile("");
+      setAlternetMobile("");
+      setEmail("");
+      setPassword("");
+      setAadhaar("");
+      setUserImage("");
+      setImageAsFile("");
+      toast.success("User Update Successfully");
+      history.push("/home");
+    } catch (error) {
+      toast.error("Error while user is update. " + error);
+    }
   };
   return (
     <>
@@ -90,6 +143,43 @@ export default function Profile() {
               <h2 className="text-center"> Profile </h2>
             </div>
             <form className="shadow p-4 mt-2">
+              <div className="form-group">
+                <div className="input-group mb-3 mt-3 justify-content-center">
+                  <img
+                    src={
+                      imageAsFile
+                        ? URL.createObjectURL(imageAsFile)
+                        : UserImage
+                        ? UserImage
+                        : usersolid
+                    }
+                    alt="image tag"
+                    width="300px"
+                    height="150px"
+                    className="img-thumbnail Profile"
+                  />
+                  {/* <span className="img-thumbnail Profile">
+                    <i class="fas fa-upload"></i>
+                  </span> */}
+                </div>
+              </div>
+              <div className="form-group">
+                <label htmlFor="UploadImage"> </label>
+                <div className="input-group mb-3">
+                  <div className="custom-file">
+                    <input
+                      type="file"
+                      className="custom-file-input"
+                      id="UploadProfileImage"
+                      accept="image/*"
+                      onChange={handleImageAsFile}
+                    />
+                    <label className="custom-file-label" htmlFor="UploadImage">
+                      {imageAsFile ? imageAsFile.name : "Choose file"}
+                    </label>
+                  </div>
+                </div>
+              </div>
               <div className="form-group">
                 <label htmlFor="Name"> Full Name </label>
                 <input
@@ -190,36 +280,8 @@ export default function Profile() {
                   }}
                 />
               </div>
-              <div className="form-group">
-                <label htmlFor="UploadImage"> Upload Image </label>
-                <div className="input-group mb-3">
-                  <div className="custom-file">
-                    <input
-                      type="file"
-                      className="custom-file-input"
-                      id="UploadImage"
-                      value={UploadImage}
-                      onChange={(e) => {
-                        setUploadImage(e.target.value);
-                      }}
-                    />
-                    <label className="custom-file-label" htmlFor="UploadImage">
-                      Choose file
-                    </label>
-                  </div>
-                  {/* <div className="input-group-append">
-                <span className="input-group-text" id>
-                  Upload
-                </span>
-              </div> */}
-                </div>
-              </div>
 
               <button
-                disabled={
-                  (!Name, !Email, !Password, !Address, !Mobile, !Aadhaar)
-                  //   !UploadImage
-                }
                 type="submit"
                 className="btn btn-primary w-100 my-3"
                 onClick={UpdateProfile}

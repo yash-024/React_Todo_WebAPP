@@ -22,9 +22,7 @@ export default function Login() {
     e.preventDefault();
 
     try {
-      debugger;
       login(Email, Password);
-
       toast.success("User Login Successfully");
       history.push("/home");
     } catch (e) {

@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { Link, useHistory } from "react-router-dom";
-import { db, auth } from "../firebase";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { useHistory } from "react-router-dom";
+import { db, auth, storage } from "../firebase";
 import { useAuth } from "./Contexts/AuthContext";
 import { toast } from "react-toastify";
+import { default as usersolid } from "../Components/Asset/Images/user-solid.svg";
+import "../Components/User/Profile.css";
 
 export default function Register() {
   const history = useHistory();
@@ -15,8 +15,14 @@ export default function Register() {
   const [Email, setEmail] = useState("");
   const [Password, setPassword] = useState("");
   const [Aadhaar, setAadhaar] = useState("");
-  const [UploadImage, setUploadImage] = useState("");
   const { signup } = useAuth();
+  const [imageAsFile, setImageAsFile] = useState("");
+
+  const handleImageAsFile = (e) => {
+    e.preventDefault();
+    const image = e.target.files[0];
+    setImageAsFile((imageFile) => image);
+  };
 
   const inputNameRef = useRef();
 
@@ -29,20 +35,56 @@ export default function Register() {
 
     signup(Email, Password)
       .then((userCredential) => {
-        // Signed in
+        // Signed in Succesfully
         const user = userCredential.user;
-        //alert("User Register Successfully..!");
-        db.collection("users").add({
-          Uid: user.uid,
-          Name: Name,
-          Address: Address,
-          Mobile: Mobile,
-          AlternetMobile: AlternetMobile,
-          Email: Email,
-          Password: Password,
-          Aadhaar: Aadhaar,
-          UploadImage: UploadImage,
-        });
+        db.collection("users")
+          .add({
+            Uid: user.uid,
+            Name: Name,
+            Address: Address,
+            Mobile: Mobile,
+            AlternetMobile: AlternetMobile,
+            Email: Email,
+            Password: Password,
+            Aadhaar: Aadhaar,
+          })
+          .then((res) => {
+            const uploadTask = storage
+              .ref(`/images/${imageAsFile.name}`)
+              .put(imageAsFile);
+            //initiates the firebase side uploading
+            uploadTask.on(
+              "state_changed",
+              (snapShot) => {
+                //takes a snap shot of the process as it is happening
+                console.log(snapShot);
+              },
+              (err) => {
+                //catches the errors
+                console.log(err);
+              },
+              () => {
+                // gets the functions from storage refences the image storage in firebase by the children
+                // gets the download url then sets the image from firebase as the value for the imgUrl key:
+                storage
+                  .ref("images")
+                  .child("/" + imageAsFile.name)
+                  .getDownloadURL()
+                  .then((fireBaseUrl) => {
+                    if (fireBaseUrl != "") {
+                      db.collection("users").doc(res.id).update({
+                        UploadImage: fireBaseUrl,
+                      });
+                    }
+                  });
+              }
+            );
+            // db.collection("users")
+            //   .where("Uid", "==", user.uid)
+            //   .onSnapshot((snapshot) => {
+            //     snapshot.docs.map((doc) => setaddUserUid(doc.id));
+            //   });
+          });
 
         setName("");
         setAddress("");
@@ -51,7 +93,6 @@ export default function Register() {
         setEmail("");
         setPassword("");
         setAadhaar("");
-        setUploadImage("");
         toast.success("User Register Successfully");
 
         history.push("/login");
@@ -75,6 +116,41 @@ export default function Register() {
               <h2 className="text-center"> Register </h2>
             </div>
             <form className="shadow p-4 mt-2">
+              <div className="form-group">
+                <div className="input-group mb-3 mt-3 justify-content-center">
+                  <img
+                    src={
+                      imageAsFile ? URL.createObjectURL(imageAsFile) : usersolid
+                    }
+                    alt="image tag"
+                    width="150px"
+                    height="60px"
+                    className="img-thumbnail"
+                  />
+                  <span class="custom-file-control form-control-file"></span>
+                </div>
+                <label htmlFor="UploadImage"> Upload Image </label>
+                <div className="input-group mb-3">
+                  <div className="custom-file">
+                    <div class="input-group-append">
+                      <span class="input-group-text" id="inputGroupFileAddon">
+                        Upload
+                      </span>
+                    </div>
+                    <input
+                      type="file"
+                      className="custom-file-input"
+                      id="UploadImage"
+                      accept="image/*"
+                      onChange={handleImageAsFile}
+                    />
+                    <label className="custom-file-label" htmlFor="UploadImage">
+                      {imageAsFile ? imageAsFile.name : "Choose file"}
+                    </label>
+                  </div>
+                </div>
+              </div>
+
               <div className="form-group">
                 <label htmlFor="Name"> Full Name </label>
                 <input
@@ -176,35 +252,10 @@ export default function Register() {
                   }}
                 />
               </div>
-              <div className="form-group">
-                <label htmlFor="UploadImage"> Upload Image </label>
-                <div className="input-group mb-3">
-                  <div className="custom-file">
-                    <input
-                      type="file"
-                      className="custom-file-input"
-                      id="UploadImage"
-                      value={UploadImage}
-                      onChange={(e) => {
-                        setUploadImage(e.target.value);
-                      }}
-                    />
-                    <label className="custom-file-label" htmlFor="UploadImage">
-                      Choose file
-                    </label>
-                  </div>
-                  {/* <div className="input-group-append">
-                <span className="input-group-text" id>
-                  Upload
-                </span>
-              </div> */}
-                </div>
-              </div>
 
               <button
                 disabled={
                   (!Name, !Email, !Password, !Address, !Mobile, !Aadhaar)
-                  //   !UploadImage
                 }
                 type="submit"
                 className="btn btn-primary w-100 my-3"

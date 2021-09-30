@@ -76,7 +76,6 @@ export default function UserList() {
           {/* </tbody>
           </table> */}
           <DataTable columns={columns} data={userlist} />
-          {console.log("Userlist :" + userlist)}
         </div>
       </div>
     </>
