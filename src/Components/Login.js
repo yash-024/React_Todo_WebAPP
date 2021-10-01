@@ -1,38 +1,34 @@
-import React, { useState, useEffect } from "react";
-import { Link, useHistory } from "react-router-dom";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebase";
+import React, { useState, useEffect, useRef } from "react";
+import { useHistory } from "react-router-dom";
+import { useAuth } from "./Contexts/AuthContext";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Login() {
   const [Email, setEmail] = useState("");
   const [Password, setPassword] = useState("");
   const history = useHistory();
+  const inputEmailRef = useRef();
+
+  const { login } = useAuth();
+
+  useEffect(() => {
+    inputEmailRef.current.focus();
+  }, []);
 
   const loginUser = (e) => {
     e.preventDefault();
 
-    signInWithEmailAndPassword(auth, Email, Password)
-      .then((userCredential) => {
-        // Signed in
-        const user = userCredential.user;
-        //alert("Sign in Successfully :" + Email);
-        history.push("/");
-        // ...
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log("Login Error :" + errorMessage);
-      });
+    try {
+      login(Email, Password);
+      toast.success("User Login Successfully");
+      history.push("/home");
+    } catch (e) {
+      toast.error("Error while user is login." + e);
+      history.push("/login");
+    }
   };
 
-  // useEffect(() => {
-  //   if (loading) {
-  //     // maybe trigger a loading screen
-  //     return;
-  //   }
-  //   if (user) history.replace("/");
-  // }, [user, loading]);
   return (
     <>
       <div className="countiner p-5">
@@ -49,7 +45,7 @@ export default function Login() {
                   type="text"
                   className="form-control"
                   id="Email"
-                  placeholder="Email"
+                  ref={inputEmailRef}
                   value={Email}
                   onChange={(e) => {
                     setEmail(e.target.value);
@@ -62,7 +58,6 @@ export default function Login() {
                   type="password"
                   className="form-control"
                   id="Password"
-                  placeholder="Password"
                   value={Password}
                   onChange={(e) => {
                     setPassword(e.target.value);

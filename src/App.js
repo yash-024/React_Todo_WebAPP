@@ -9,32 +9,40 @@ import Home from "./Components/Home/Home";
 import Register from "./Components/Register";
 import Login from "./Components/Login";
 import UserList from "./Components/UserList";
-import { db, auth } from "./firebase";
-import { useEffect, useState } from "react/cjs/react.development";
+import { useAuth } from "./Components/Contexts/AuthContext";
+import { ToastContainer } from "react-toastify";
+import Profile from "./Components/User/Profile";
 
 function App() {
-  const [user, setUser] = useState();
-  const userx = auth.currentUser;
-  useEffect(() => {
-    if (userx) {
-      setUser(userx);
-    }
-  }, [userx]);
-  console.log("auth :" + auth);
+  const { currentUser } = useAuth();
+
   return (
     <>
-      <Header title="Todo List" />
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
 
+      <Header title="Todo List" />
       <Switch>
         <Route path="/todo" exact component={HomeTodo} />
         <Route path="/about" component={About} />
         <Route path="/register" component={Register} />
         <Route path="/login" component={Login} />
         <Route path="/userlist" component={UserList} />
+        <Route path="/profile" component={Profile} />
         <Route path="/" component={Home} />
       </Switch>
-
       <Footer />
+
+      <ToastContainer />
     </>
   );
 }

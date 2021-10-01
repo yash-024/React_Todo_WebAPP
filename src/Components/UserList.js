@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { db } from "../firebase";
 import DataTable from "react-data-table-component";
+import { default as usersolid } from "../Components/Asset/Images/user-solid.svg";
 
 export default function UserList() {
   const [userlist, setUserlist] = useState([]);
@@ -11,6 +12,21 @@ export default function UserList() {
   }, []);
 
   const columns = [
+    {
+      name: "Profile",
+      selector: (row) => row.UploadImage,
+      cell: (row) =>
+        row.UploadImage ? (
+          <img
+            height="84px"
+            width="56px"
+            alt={row.name}
+            src={row.UploadImage}
+          />
+        ) : (
+          <img height="84px" width="56px" alt={row.name} src={usersolid} />
+        ),
+    },
     {
       name: "Name",
       selector: (row) => row.Name,
@@ -23,10 +39,7 @@ export default function UserList() {
       name: "Address",
       selector: (row) => row.Address,
     },
-    {
-      name: "Name",
-      selector: (row) => row.Name,
-    },
+
     {
       name: "Mobile",
       selector: (row) => row.Mobile,
@@ -48,7 +61,7 @@ export default function UserList() {
           <h5 className="text-center ">
             <b>User List </b>
           </h5>
-          {/* <table class="table shadow text-center">
+          {/*           <table class="table shadow text-center">
             <thead class="thead-dark">
               <tr> */}
           {/* <th scope="col">UserID</th> */}
@@ -75,8 +88,7 @@ export default function UserList() {
           {/* ); })} */}
           {/* </tbody>
           </table> */}
-          <DataTable columns={columns} data={userlist} />
-          {console.log("Userlist :" + userlist)}
+          <DataTable columns={columns} data={userlist} pagination />
         </div>
       </div>
     </>

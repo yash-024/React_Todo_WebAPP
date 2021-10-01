@@ -3,8 +3,10 @@ import "./Home.css";
 import team1 from "../Asset/Images/team-1.jpg";
 import team2 from "../Asset/Images/team-2.jpg";
 import team3 from "../Asset/Images/team-3.jpg";
+import { useAuth } from "../Contexts/AuthContext";
 
 function Home() {
+  const { currentUser } = useAuth();
   return (
     <>
       <div>
@@ -24,8 +26,9 @@ function Home() {
                 //   background: "rgb(21 55 75 / 80%)",
                 // }}
               >
-                <h1>Welcome </h1>
-                <h2>What We Believe</h2>
+                <h1>Welcome {currentUser && currentUser.email}</h1>
+
+                <h2>What We Believe In Success</h2>
                 <a href="/" className="btn btn-success mt-3">
                   Get Started
                 </a>
