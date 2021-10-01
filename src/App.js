@@ -9,10 +9,8 @@ import Home from "./Components/Home/Home";
 import Register from "./Components/Register";
 import Login from "./Components/Login";
 import UserList from "./Components/UserList";
-import { db, auth } from "./firebase";
-import { useEffect, useState } from "react/cjs/react.development";
 import { useAuth } from "./Components/Contexts/AuthContext";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import Profile from "./Components/User/Profile";
 
 function App() {

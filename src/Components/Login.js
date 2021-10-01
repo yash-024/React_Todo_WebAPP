@@ -1,9 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link, useHistory } from "react-router-dom";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebase";
+import { useHistory } from "react-router-dom";
 import { useAuth } from "./Contexts/AuthContext";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function Login() {

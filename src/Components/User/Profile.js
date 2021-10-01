@@ -1,10 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
-import { db, auth, storage } from "../../firebase";
+import { db, storage } from "../../firebase";
 import { useAuth } from "../Contexts/AuthContext";
 import "./Profile.css";
 import { default as usersolid } from "../Asset/Images/user-solid.svg";
+import { loading } from "../loading";
 
 export default function Profile() {
   const history = useHistory();
@@ -44,15 +45,12 @@ export default function Profile() {
   }, [userData, isSet]);
 
   useEffect(() => {
-    //setcurrentUserEmail(currentUser.email);
-
     if (
       userData.length === 0 &&
       currentUser != "undefined" &&
       currentUser != null
     ) {
       db.collection("users")
-        //.where("Email", "==", "jack@gmail.com")
         .where("Email", "==", currentUser.email)
         .onSnapshot((snapshot) => {
           setuserData(
@@ -63,7 +61,7 @@ export default function Profile() {
           );
         });
     }
-  }, [userData]);
+  }, [userData, currentUser]);
 
   const UpdateProfile = (e) => {
     e.preventDefault();
@@ -84,7 +82,6 @@ export default function Profile() {
         .doc(UserHoldRecoredUId)
         .set(EditUserInfo)
         .then(() => {
-          debugger;
           if (imageAsFile) {
             const uploadTask = storage
               .ref(`/images/${imageAsFile.name}`)
@@ -108,7 +105,6 @@ export default function Profile() {
                   .child("/" + imageAsFile.name)
                   .getDownloadURL()
                   .then((fireBaseUrl) => {
-                    debugger;
                     db.collection("users")
                       .doc(UserHoldRecoredUId)
                       .update({ UploadImage: fireBaseUrl });
@@ -117,23 +113,14 @@ export default function Profile() {
             );
           }
         });
-
-      setName("");
-      setAddress("");
-      setMobile("");
-      setAlternetMobile("");
-      setEmail("");
-      setPassword("");
-      setAadhaar("");
-      setUserImage("");
-      setImageAsFile("");
       toast.success("User Update Successfully");
-      history.push("/home");
     } catch (error) {
       toast.error("Error while user is update. " + error);
     }
   };
-  return (
+  return !isSet ? (
+    loading()
+  ) : (
     <>
       <div className="countiner p-3">
         <div className="row justify-content-center ">
@@ -255,6 +242,7 @@ export default function Profile() {
               <div className="form-group">
                 <label htmlFor="Email"> Email Address </label>
                 <input
+                  disabled
                   type="text"
                   className="form-control"
                   id="Email"
