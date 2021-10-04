@@ -20,9 +20,19 @@ export default function Login() {
     e.preventDefault();
 
     try {
-      login(Email, Password);
-      toast.success("User Login Successfully");
-      history.push("/home");
+      login(Email, Password)
+        .then((userCredential) => {
+          // Signed in
+          if (userCredential) {
+            toast.success("User Login Successfully");
+            history.push("/home");
+          }
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          toast.error(" Error while User Login :" + errorMessage);
+        });
     } catch (e) {
       toast.error("Error while user is login." + e);
       history.push("/login");

@@ -13,7 +13,7 @@ export default function UserList() {
 
   const columns = [
     {
-      name: "Profile",
+      name: <h5>Profile</h5>,
       selector: (row) => row.UploadImage,
       cell: (row) =>
         row.UploadImage ? (
@@ -28,28 +28,28 @@ export default function UserList() {
         ),
     },
     {
-      name: "Name",
+      name: <h5>Name</h5>,
       selector: (row) => row.Name,
     },
     {
-      name: "Email",
+      name: <h5>Email</h5>,
       selector: (row) => row.Email,
     },
     {
-      name: "Address",
+      name: <h5>Address</h5>,
       selector: (row) => row.Address,
     },
 
     {
-      name: "Mobile",
+      name: <h5>Mobile</h5>,
       selector: (row) => row.Mobile,
     },
     {
-      name: "AlternetMobile",
+      name: <h5>AlternetMobile</h5>,
       selector: (row) => row.AlternetMobile,
     },
     {
-      name: "Aadhaar",
+      name: <h5>Aadhaar</h5>,
       selector: (row) => row.Aadhaar,
     },
   ];
@@ -58,9 +58,9 @@ export default function UserList() {
     <>
       <div className="countiner p-3">
         <div className="row justify-content-center ">
-          <h5 className="text-center ">
+          <h2 className="text-center ">
             <b>User List </b>
-          </h5>
+          </h2>
           {/*           <table class="table shadow text-center">
             <thead class="thead-dark">
               <tr> */}
@@ -88,7 +88,12 @@ export default function UserList() {
           {/* ); })} */}
           {/* </tbody>
           </table> */}
-          <DataTable columns={columns} data={userlist} pagination />
+          <DataTable
+            columns={columns}
+            data={userlist}
+            pagination
+            defaultSortFieldId={2}
+          />
         </div>
       </div>
     </>

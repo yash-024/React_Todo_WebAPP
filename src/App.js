@@ -9,13 +9,10 @@ import Home from "./Components/Home/Home";
 import Register from "./Components/Register";
 import Login from "./Components/Login";
 import UserList from "./Components/UserList";
-import { useAuth } from "./Components/Contexts/AuthContext";
 import { ToastContainer } from "react-toastify";
 import Profile from "./Components/User/Profile";
 
 function App() {
-  const { currentUser } = useAuth();
-
   return (
     <>
       <ToastContainer

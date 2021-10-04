@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
-import { db, storage } from "../../firebase";
+import { db, auth, storage } from "../../firebase";
 import { useAuth } from "../Contexts/AuthContext";
 import "./Profile.css";
 import { default as usersolid } from "../Asset/Images/user-solid.svg";
@@ -9,7 +9,7 @@ import { loading } from "../loading";
 
 export default function Profile() {
   const history = useHistory();
-  const { currentUser } = useAuth();
+  const { currentUser, logout } = useAuth();
   const [Name, setName] = useState("");
   const [Address, setAddress] = useState("");
   const [Mobile, setMobile] = useState("");
@@ -18,6 +18,7 @@ export default function Profile() {
   const [Password, setPassword] = useState("");
   const [Aadhaar, setAadhaar] = useState("");
   const [UserImage, setUserImage] = useState("");
+  const [OldPassword, setOldPassword] = useState("");
   const [UserHoldRecoredUId, SetUserHoldRecoredUId] = useState("");
   const [userData, setuserData] = useState([]);
   const [isSet, setuser] = useState(false);
@@ -25,8 +26,10 @@ export default function Profile() {
 
   const handleImageAsFile = (e) => {
     e.preventDefault();
-    const image = e.target.files[0];
-    setImageAsFile((imageFile) => image);
+    if (e.target.files[0]) {
+      const image = e.target.files[0];
+      setImageAsFile((imageFile) => image);
+    }
   };
 
   useEffect(() => {
@@ -38,6 +41,7 @@ export default function Profile() {
       setAlternetMobile(userData[0].user.AlternetMobile);
       setEmail(userData[0].user.Email);
       setPassword(userData[0].user.Password);
+      setOldPassword(userData[0].user.Password);
       setAadhaar(userData[0].user.Aadhaar);
       setUserImage(userData[0].user.UploadImage);
       setuser(true);
@@ -51,7 +55,7 @@ export default function Profile() {
       currentUser != null
     ) {
       db.collection("users")
-        .where("Email", "==", currentUser.email)
+        .where("Uid", "==", currentUser.uid)
         .onSnapshot((snapshot) => {
           setuserData(
             snapshot.docs.map((doc) => ({
@@ -75,6 +79,7 @@ export default function Profile() {
       Email: Email,
       Password: Password,
       Aadhaar: Aadhaar,
+      UploadImage: UserImage,
     };
 
     try {
@@ -114,6 +119,17 @@ export default function Profile() {
           }
         });
       toast.success("User Update Successfully");
+      if (currentUser.email != Email) {
+        auth.currentUser.updateEmail(Email);
+      }
+      if (OldPassword != Password) {
+        auth.currentUser.updatePassword(Password);
+      }
+
+      if (currentUser.email != Email || OldPassword != Password) {
+        logout();
+        history.push("/login");
+      }
     } catch (error) {
       toast.error("Error while user is update. " + error);
     }
@@ -202,9 +218,6 @@ export default function Profile() {
                   id="Aadhaar"
                   aria-describedby="AadhaarHelp"
                   placeholder=""
-                  min="0"
-                  max="99999"
-                  maxlength="5"
                   value={Aadhaar}
                   onChange={(e) => {
                     setAadhaar(e.target.value);
@@ -242,7 +255,6 @@ export default function Profile() {
               <div className="form-group">
                 <label htmlFor="Email"> Email Address </label>
                 <input
-                  disabled
                   type="text"
                   className="form-control"
                   id="Email"
