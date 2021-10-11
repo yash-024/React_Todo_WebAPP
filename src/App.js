@@ -11,6 +11,10 @@ import Login from "./Components/Login";
 import UserList from "./Components/UserList";
 import { ToastContainer } from "react-toastify";
 import Profile from "./Components/User/Profile";
+import { RentHome } from "./Components/Rent/RentHome";
+import AddProduct from "./Components/Product/AddProduct";
+import ProductList from "./Components/Product/ProductList";
+import ShopProduct from "./Components/Product/ShopProduct";
 
 function App() {
   return (
@@ -35,6 +39,10 @@ function App() {
         <Route path="/login" component={Login} />
         <Route path="/userlist" component={UserList} />
         <Route path="/profile" component={Profile} />
+        <Route path="/rent" component={RentHome} />
+        <Route path="/addproduct" component={AddProduct} />
+        <Route path="/productlist" component={ProductList} />
+        <Route path="/shopcart" component={ShopProduct} />
         <Route path="/" component={Home} />
       </Switch>
       <Footer />

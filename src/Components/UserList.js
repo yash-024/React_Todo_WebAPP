@@ -95,6 +95,17 @@ export default function UserList() {
             defaultSortFieldId={2}
           />
         </div>
+
+        {/* <div className="form-group">
+          <label htmlFor=""> User List </label>
+          <select className="form-control col-2">
+            {userlist.map((data) => (
+              <option key={data.Name} value={data.Uid}>
+                {data.Name}
+              </option>
+            ))}
+          </select>
+        </div> */}
       </div>
     </>
   );

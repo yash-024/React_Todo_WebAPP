@@ -1,18 +1,28 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import "./Header.css";
 import { Link, useHistory } from "react-router-dom";
 import { useAuth } from "./Components/Contexts/AuthContext";
 import { toast } from "react-toastify";
+import { useState } from "react/cjs/react.development";
+import { db } from "../src/firebase";
 
 const Header = (props) => {
-  const { currentUser, logout } = useAuth();
+  const { currentUser, logout, AddProducts } = useAuth();
   const history = useHistory();
+  const [EmailVerfiedUser, setEmailVerfiedUser] = useState(false);
+
+  useEffect(() => {
+    if (currentUser != null && AddProducts != null) {
+      setEmailVerfiedUser(currentUser.emailVerified);
+    }
+  }, [currentUser, AddProducts]);
 
   const LogoutUser = (e) => {
     e.preventDefault();
     try {
       logout().then(
+        setEmailVerfiedUser(false),
         toast.success("User Logout Successfully"),
         history.push("/home")
       );
@@ -20,6 +30,9 @@ const Header = (props) => {
       toast.error("Error while logout user...!");
     }
   };
+
+  //console.log("Header CurrentUser :" + JSON.stringify(currentUser));
+  //console.log("Header CurrentUser Email verified :" + EmailVerfiedUser);
 
   return (
     <>
@@ -41,20 +54,8 @@ const Header = (props) => {
           </button>
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-              {!currentUser ? (
-                <>
-                  <li className="nav-item">
-                    <Link to="/" className="nav-link">
-                      Home
-                    </Link>
-                  </li>
-                  <li className="nav-item">
-                    <Link className="nav-link" to="/about">
-                      About
-                    </Link>
-                  </li>
-                </>
-              ) : (
+              {EmailVerfiedUser === true ||
+              (currentUser && currentUser.email === "admin@gmail.com") ? (
                 <>
                   <li className="nav-item">
                     <Link to="/" className="nav-link">
@@ -66,9 +67,55 @@ const Header = (props) => {
                       Todo
                     </Link>
                   </li>
+                  {currentUser && currentUser.email === "admin@gmail.com" ? (
+                    <li className="nav-item">
+                      <Link className="nav-link" to="/userlist">
+                        Userlist
+                      </Link>
+                    </li>
+                  ) : null}
+
                   <li className="nav-item">
-                    <Link className="nav-link" to="/userlist">
-                      Userlist
+                    <Link className="nav-link" to="/rent">
+                      Rent
+                    </Link>
+                  </li>
+                  <li className="nav-item dropdown">
+                    <Link
+                      className="nav-link dropdown-toggle"
+                      to="/productlist"
+                      id="navbarDropdown"
+                      role="button"
+                      data-toggle="dropdown"
+                      aria-haspopup="true"
+                      aria-expanded="false"
+                    >
+                      Product
+                    </Link>
+                    <div
+                      className="dropdown-menu"
+                      aria-labelledby="navbarDropdown"
+                    >
+                      <Link className="dropdown-item" to="/addproduct">
+                        Add Product
+                      </Link>
+                      <Link className="dropdown-item" to="/productlist">
+                        List of Product
+                      </Link>
+                    </div>
+                  </li>
+
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/about">
+                      About
+                    </Link>
+                  </li>
+                </>
+              ) : (
+                <>
+                  <li className="nav-item">
+                    <Link to="/" className="nav-link">
+                      Home
                     </Link>
                   </li>
                   <li className="nav-item">
@@ -97,6 +144,11 @@ const Header = (props) => {
                 </>
               ) : (
                 <>
+                  <Link className="nav-link" to="/shopcart">
+                    <i className="fas fa-shopping-basket">{AddProducts}</i>
+                    &nbsp;
+                    {/* {currentUser && currentUser.email} */}
+                  </Link>
                   <Link className="nav-link" to="/profile">
                     <i className="fa fa-user" aria-hidden="true"></i> &nbsp;
                     {currentUser && currentUser.email}

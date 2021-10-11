@@ -51,11 +51,11 @@ export default function Profile() {
   useEffect(() => {
     if (
       userData.length === 0 &&
-      currentUser != "undefined" &&
-      currentUser != null
+      currentUser !== "undefined" &&
+      currentUser !== null
     ) {
       db.collection("users")
-        .where("Uid", "==", currentUser.uid)
+        .where("Email", "==", currentUser.email)
         .onSnapshot((snapshot) => {
           setuserData(
             snapshot.docs.map((doc) => ({
@@ -66,6 +66,8 @@ export default function Profile() {
         });
     }
   }, [userData, currentUser]);
+
+  console.log("currentuser :" + JSON.stringify(currentUser));
 
   const UpdateProfile = (e) => {
     e.preventDefault();
@@ -119,15 +121,15 @@ export default function Profile() {
           }
         });
       toast.success("User Update Successfully");
-      if (currentUser.email != Email) {
+      if (currentUser.email !== Email) {
         auth.currentUser.updateEmail(Email);
       }
-      if (OldPassword != Password) {
+      if (OldPassword !== Password) {
         auth.currentUser.updatePassword(Password);
       }
 
       if (currentUser.email != Email || OldPassword != Password) {
-        logout();
+        //logout();
         history.push("/login");
       }
     } catch (error) {
@@ -218,6 +220,7 @@ export default function Profile() {
                   id="Aadhaar"
                   aria-describedby="AadhaarHelp"
                   placeholder=""
+                  min="0"
                   value={Aadhaar}
                   onChange={(e) => {
                     setAadhaar(e.target.value);

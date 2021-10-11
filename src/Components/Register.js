@@ -5,6 +5,7 @@ import { useAuth } from "./Contexts/AuthContext";
 import { toast } from "react-toastify";
 import { default as usersolid } from "../Components/Asset/Images/user-solid.svg";
 import "../Components/User/Profile.css";
+import { sendEmailVerification } from "firebase/auth";
 
 export default function Register() {
   const history = useHistory();
@@ -38,6 +39,7 @@ export default function Register() {
         // Signed in Succesfully
         if (userCredential) {
           const user = userCredential.user;
+
           db.collection("users")
             .add({
               Uid: user.uid,
