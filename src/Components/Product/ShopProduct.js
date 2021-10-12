@@ -102,36 +102,58 @@ export default function ShopProduct(props) {
                             </h6>
                             <h6>
                               <b> Quantity : {data && data.totalItem}</b> &nbsp;
-                              {data.totalItem > 1 ? (
-                                <button
-                                  type="button"
-                                  class="btn btn-success btn-sm"
-                                  disabled={data.totalItem > 1 ? false : true}
-                                  onClick={(event) =>
-                                    db
-                                      .collection("PurchaseProduct")
-                                      .doc(data.id)
-                                      .update({
-                                        totalItem: data.totalItem - 1,
-                                      })
-                                      .then
-                                      // setshopcart([
-                                      //   ...shopcart
-                                      //     .map((doc) => {
-                                      //       if ((doc.id = data.id))
-                                      //         doc.totalItem =
-                                      //           data.totalItem - 1;
-                                      //     })
-                                      //     .slice(),
-                                      // ])
-                                      ()
-                                  }
-                                >
-                                  <i class="fas fa-minus"></i>
-                                </button>
-                              ) : (
-                                ""
-                              )}
+                              <button
+                                type="button"
+                                class="btn btn-success btn-sm ml-1 mr-1"
+                                disabled={data.totalItem >= 1 ? false : true}
+                                onClick={(event) =>
+                                  db
+                                    .collection("PurchaseProduct")
+                                    .doc(data.id)
+                                    .update({
+                                      totalItem: data.totalItem + 1,
+                                    })
+                                    .then(() => {
+                                      debugger;
+                                      let GetIndex = shopcart.findIndex(
+                                        (x) => x.id == data.id
+                                      );
+                                      shopcart[GetIndex].totalItem =
+                                        data.totalItem + 1;
+                                      if (GetIndex != null) {
+                                        setshopcart([...shopcart, shopcart]);
+                                      }
+                                    })
+                                }
+                              >
+                                <i class="fas fa-plus"></i>
+                              </button>
+                              <button
+                                type="button"
+                                class="btn btn-success btn-sm ml-1 mr-1"
+                                disabled={data.totalItem > 1 ? false : true}
+                                onClick={(event) =>
+                                  db
+                                    .collection("PurchaseProduct")
+                                    .doc(data.id)
+                                    .update({
+                                      totalItem: data.totalItem - 1,
+                                    })
+                                    .then(() => {
+                                      debugger;
+                                      let GetIndex = shopcart.findIndex(
+                                        (x) => x.id == data.id
+                                      );
+                                      shopcart[GetIndex].totalItem =
+                                        data.totalItem - 1;
+                                      if (GetIndex != null) {
+                                        setshopcart([...shopcart, shopcart]);
+                                      }
+                                    })
+                                }
+                              >
+                                <i class="fas fa-minus"></i>
+                              </button>
                             </h6>
                             <h6>
                               <b>
